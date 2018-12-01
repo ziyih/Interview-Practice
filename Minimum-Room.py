@@ -10,11 +10,15 @@ def min_room_1(meetings):
     approach 1:
         Assume the meetings are given in a dict with the format
             {'meeting_name': ["14:00", "15:00"]}
-        A room is a dict that stores the same key-value pairs of the meetings it accomodates
-        Use a list to keep track of the rooms allocated
+        A room is a dict that stores the same key-value pairs of the meetings it accomodates.
+        Use a list to keep track of the rooms allocated.
         For each meeting given, traverse all the rooms in the room_list to see if
-        it can be accomodated
-
+        it can be accomodated; if it ever gets accomodated in a room, immediately
+        look at the next meeting; if never, allocate a new room to the list.
+        Within a room, traverse all meeting info to see if there is a time conflict;
+        if a conflict ever happens, break to the next room.
+    @pro: it's a solution
+    @con: O(mn) time
     """
     room_list = []
     for key in meetings.keys():
@@ -24,15 +28,20 @@ def min_room_1(meetings):
         # check if there is a room that can accomodate this meeting
         add_room_flag = 1                   # if this flag == 1, a new room is needed
         for room in room_list:
+            accomodate_flag = 1             # 0 means there is a conflict
             for key in room.keys():
                 s_2 = room[key][0]          # parse the start time
                 e_2 = room[key][1]          # parse the end time
-                if (later(s, s_2) and ) or not later(s_2, e):
+                if (later(s, s_2) and not later(s, e_2)):
                     # if it ever conflicts with a time here
+                    accomodate_flag = 0
                     break
-            if add_room_flag == 0:
+            if accomodate_flag == 1:
+                # the meeting has been accomodated
+                add_room_flag = 0
                 break
         if add_room_flag == 1:
+            # none of room in the list can accomodate this meeting
             room_list.append({})
             room_list[-1][key] = meetings[key]
 
